@@ -9,15 +9,23 @@ class MoviesController < ApplicationController
   def index
     @all_ratings = Movie.all_ratings
     
+    sort = params[:sort]
     @checked_ratings = params[:ratings] || session[:ratings] || Hash[@all_ratings.map { |r| [r, 1] }]
     
     if !params[:commit].nil? or params[:ratings].nil? or (params[:sort].nil? && !session[:sort].nil?)
       flash.keep
-      redirect_to movies_path :ratings => @checked_ratings
+      redirect_to movies_path :ratings => @checked_ratings, :sort => sort
     end
     
-    @movies = Movie.with_ratings(@checked_ratings.keys)
-    session[:ratings] = @checked_ratings
+    case sort 
+    when "title"
+      ordering, @title_cls = {:title => :asc}, 'hilite'
+    when "release_date"
+      ordering, @release_cls = {:release_date => :asc}, 'hilite'
+    
+    end
+    
+    @movies = Movie.with_ratings(@checked_ratings.keys).order(ordering)
       
   end
 
