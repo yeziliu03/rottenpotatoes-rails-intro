@@ -7,7 +7,18 @@ class MoviesController < ApplicationController
   end
 
   def index
-    @movies = Movie.all
+    @all_ratings = Movie.all_ratings
+    
+    @checked_ratings = params[:ratings] || session[:ratings] || Hash[@all_ratings.map { |r| [r, 1] }]
+    
+    if !params[:commit].nil? or params[:ratings].nil? or (params[:sort].nil? && !session[:sort].nil?)
+      flash.keep
+      redirect_to movies_path :ratings => @checked_ratings
+    end
+    
+    @movies = Movie.with_ratings(@checked_ratings.keys)
+    session[:ratings] = @checked_ratings
+      
   end
 
   def new
