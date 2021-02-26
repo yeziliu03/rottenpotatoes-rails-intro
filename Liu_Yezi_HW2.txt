@@ -1,0 +1,3 @@
+
+https://github.com/yeziliu03/rottenpotatoes-rails-intro
+https://damp-ocean-67627.herokuapp.com/
