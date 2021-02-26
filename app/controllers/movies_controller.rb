@@ -9,7 +9,7 @@ class MoviesController < ApplicationController
   def index
     @all_ratings = Movie.all_ratings
     
-    sort = params[:sort]
+    sort = params[:sort] || session[:sort]
     @checked_ratings = params[:ratings] || session[:ratings] || Hash[@all_ratings.map { |r| [r, 1] }]
     
     if !params[:commit].nil? or params[:ratings].nil? or (params[:sort].nil? && !session[:sort].nil?)
@@ -26,6 +26,8 @@ class MoviesController < ApplicationController
     end
     
     @movies = Movie.with_ratings(@checked_ratings.keys).order(ordering)
+    session[:sort] = sort 
+    session[:ratings] = @checked_ratings
       
   end
 
